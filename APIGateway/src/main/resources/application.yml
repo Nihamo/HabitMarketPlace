@@ -1,0 +1,54 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: API-GATEWAY
+
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+
+      routes:
+
+        # ============================
+        #   WAREHOUSE SERVICE ROUTE
+        # ============================
+        - id: warehouse-service
+          uri: lb://WAREHOUSE-SERVICE
+          predicates:
+            - Path=/warehouse/**
+
+
+        # ============================
+        #   ORDER SERVICE ROUTE
+        # ============================
+        - id: order-service
+          uri: lb://ORDER-SERVICE
+          predicates:
+            - Path=/orders/**
+
+
+        # ============================
+        #   ORCHESTRATION SERVICE ROUTE
+        # ============================
+        - id: orchestration-service
+          uri: lb://ORCHESTRATION-SERVICE
+          predicates:
+            - Path=/orchestration/**
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
