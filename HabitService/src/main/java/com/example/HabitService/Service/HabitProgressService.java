@@ -21,12 +21,23 @@ public class HabitProgressService {
     }
 
     // -------------------------------------------------------------------
-    // ADD DAILY PROGRESS (User marks habit as completed for today)
+    // VALIDATE HABIT OWNER
     // -------------------------------------------------------------------
-    public HabitProgress addProgress(Long habitId) {
-
+    private void validateHabitOwnership(Long habitId, Long userId) {
         Habit habit = habitRepo.findById(habitId)
                 .orElseThrow(() -> new RuntimeException("Habit not found: " + habitId));
+
+        if (!habit.getUserId().equals(userId)) {
+            throw new RuntimeException("This habit does not belong to user: " + userId);
+        }
+    }
+
+    // -------------------------------------------------------------------
+    // ADD DAILY PROGRESS (User marks habit as completed for today)
+    // -------------------------------------------------------------------
+    public HabitProgress addProgress(Long habitId, Long userId) {
+
+        validateHabitOwnership(habitId, userId);
 
         LocalDate today = LocalDate.now();
 
@@ -47,14 +58,19 @@ public class HabitProgressService {
     // -------------------------------------------------------------------
     // GET ALL PROGRESS FOR A HABIT (calendar view)
     // -------------------------------------------------------------------
-    public List<HabitProgress> getProgressByHabit(Long habitId) {
+    public List<HabitProgress> getProgressByHabit(Long habitId, Long userId) {
+
+        validateHabitOwnership(habitId, userId);
+
         return progressRepo.findByHabitIdOrderByDateAsc(habitId);
     }
 
     // -------------------------------------------------------------------
     // GET CURRENT STREAK
     // -------------------------------------------------------------------
-    public int getStreak(Long habitId) {
+    public int getStreak(Long habitId, Long userId) {
+
+        validateHabitOwnership(habitId, userId);
 
         List<HabitProgress> progressList =
                 progressRepo.findByHabitIdOrderByDateAsc(habitId);
@@ -63,13 +79,11 @@ public class HabitProgressService {
 
         int streak = 0;
         LocalDate today = LocalDate.now();
-
         LocalDate checkDate = today;
 
         while (true) {
 
-            // Create a final copy for lambda
-            final LocalDate dateToCheck = checkDate;
+            final LocalDate dateToCheck = checkDate; // Lambda-safe variable
 
             boolean exists = progressList.stream()
                     .anyMatch(p -> p.getDate().equals(dateToCheck));
@@ -88,15 +102,26 @@ public class HabitProgressService {
     // -------------------------------------------------------------------
     // GET TOTAL COMPLETION COUNT
     // -------------------------------------------------------------------
-    public long getTotalCompletedDays(Long habitId) {
+    public long getTotalCompletedDays(Long habitId, Long userId) {
+
+        validateHabitOwnership(habitId, userId);
+
         return progressRepo.findByHabitId(habitId).size();
     }
 
     // -------------------------------------------------------------------
     // DELETE A PROGRESS ENTRY (admin/user fixes mistake)
     // -------------------------------------------------------------------
-    public String deleteProgress(Long progressId) {
+    public String deleteProgress(Long progressId, Long userId) {
+
+        HabitProgress progress = progressRepo.findById(progressId)
+                .orElseThrow(() -> new RuntimeException("Progress not found: " + progressId));
+
+        // Validate ownership using habitId from the progress record
+        validateHabitOwnership(progress.getHabitId(), userId);
+
         progressRepo.deleteById(progressId);
+
         return "Progress entry deleted.";
     }
 }

@@ -19,40 +19,55 @@ public class HabitProgressController {
     // -------------------------------------------------------------------------
     // ADD DAILY PROGRESS  (User marks today's habit as done)
     // -------------------------------------------------------------------------
-    @PostMapping("/{habitId}")
-    public HabitProgress addProgress(@PathVariable Long habitId) {
-        return progressService.addProgress(habitId);
+    @PostMapping("/{habitId}/user/{userId}")
+    public HabitProgress addProgress(
+            @PathVariable Long habitId,
+            @PathVariable Long userId
+    ) {
+        return progressService.addProgress(habitId, userId);
     }
 
     // -------------------------------------------------------------------------
     // GET ALL PROGRESS ENTRIES FOR A HABIT (sorted by date)
     // -------------------------------------------------------------------------
-    @GetMapping("/habit/{habitId}")
-    public List<HabitProgress> getProgressByHabit(@PathVariable Long habitId) {
-        return progressService.getProgressByHabit(habitId);
+    @GetMapping("/habit/{habitId}/user/{userId}")
+    public List<HabitProgress> getProgressByHabit(
+            @PathVariable Long habitId,
+            @PathVariable Long userId
+    ) {
+        return progressService.getProgressByHabit(habitId, userId);
     }
 
     // -------------------------------------------------------------------------
     // GET CURRENT STREAK FOR A HABIT
     // -------------------------------------------------------------------------
-    @GetMapping("/streak/{habitId}")
-    public int getStreak(@PathVariable Long habitId) {
-        return progressService.getStreak(habitId);
+    @GetMapping("/streak/{habitId}/user/{userId}")
+    public int getStreak(
+            @PathVariable Long habitId,
+            @PathVariable Long userId
+    ) {
+        return progressService.getStreak(habitId, userId);
     }
 
     // -------------------------------------------------------------------------
     // GET TOTAL COMPLETED DAYS FOR A HABIT
     // -------------------------------------------------------------------------
-    @GetMapping("/total/{habitId}")
-    public long getTotalCompleted(@PathVariable Long habitId) {
-        return progressService.getTotalCompletedDays(habitId);
+    @GetMapping("/total/{habitId}/user/{userId}")
+    public long getTotalCompleted(
+            @PathVariable Long habitId,
+            @PathVariable Long userId
+    ) {
+        return progressService.getTotalCompletedDays(habitId, userId);
     }
 
     // -------------------------------------------------------------------------
-    // DELETE A PROGRESS ENTRY
+    // DELETE A PROGRESS ENTRY (user/admin)
     // -------------------------------------------------------------------------
-    @DeleteMapping("/{progressId}")
-    public String deleteProgress(@PathVariable Long progressId) {
-        return progressService.deleteProgress(progressId);
+    @DeleteMapping("/{progressId}/user/{userId}")
+    public String deleteProgress(
+            @PathVariable Long progressId,
+            @PathVariable Long userId
+    ) {
+        return progressService.deleteProgress(progressId, userId);
     }
 }
