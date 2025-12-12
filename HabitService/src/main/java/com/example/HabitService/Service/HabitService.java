@@ -66,21 +66,45 @@ public class HabitService {
 
         Habit existing = getHabitById(id);
 
-        existing.setTitle(updated.getTitle());
-        existing.setDescription(updated.getDescription());
-        existing.setPublic(updated.isPublic());
-        existing.setTemplate(updated.isTemplate());
-        existing.setStartDate(updated.getStartDate());
-        existing.setEndDate(updated.getEndDate());
-        existing.setDurationDays(updated.getDurationDays());
+        // -------------------------
+        // Update ONLY fields provided
+        // -------------------------
 
-        // Recalculate derived fields again
+        if (updated.getTitle() != null)
+            existing.setTitle(updated.getTitle());
+
+        if (updated.getDescription() != null)
+            existing.setDescription(updated.getDescription());
+
+        if (updated.getStartDate() != null)
+            existing.setStartDate(updated.getStartDate());
+
+        if (updated.getEndDate() != null)
+            existing.setEndDate(updated.getEndDate());
+
+        // durationDays is primitive int → cannot check null
+        // So we treat 0 as "not provided"
+        if (updated.getDurationDays() > 0)
+            existing.setDurationDays(updated.getDurationDays());
+
+        // Boolean values — update only if NOT null
+        if (updated.getIsPublic() != null)
+            existing.setIsPublic(updated.getIsPublic());
+
+        if (updated.getIsTemplate() != null)
+            existing.setIsTemplate(updated.getIsTemplate());
+
+        if (updated.getTemplateSourceId() != null)
+            existing.setTemplateSourceId(updated.getTemplateSourceId());
+
+        // -------------------------
+        // AUTO RECALCULATE derived fields
+        // -------------------------
         if (existing.getStartDate() != null && existing.getEndDate() != null) {
-            int calculated = existing.getStartDate().until(existing.getEndDate()).getDays() + 1;
-            existing.setDurationDays(calculated);
+            int days = existing.getStartDate().until(existing.getEndDate()).getDays() + 1;
+            existing.setDurationDays(days);
         }
-
-        if (existing.getStartDate() != null && existing.getDurationDays() > 0 && existing.getEndDate() == null) {
+        else if (existing.getStartDate() != null && existing.getDurationDays() > 0) {
             existing.setEndDate(existing.getStartDate().plusDays(existing.getDurationDays() - 1));
         }
 
@@ -140,8 +164,8 @@ public class HabitService {
         adopted.setStartDate(template.getStartDate());
         adopted.setEndDate(template.getEndDate());
 
-        adopted.setTemplate(false);           // adopted ones are not templates
-        adopted.setPublic(false);             // user may choose to make it public
+        adopted.setIsTemplate(false);           // adopted ones are not templates
+        adopted.setIsPublic(false);             // user may choose to make it public
         adopted.setTemplateSourceId(template.getId());  // reference to original
 
         updateHabitStatus(adopted);

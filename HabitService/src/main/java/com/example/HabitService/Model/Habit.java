@@ -19,8 +19,8 @@ public class Habit {
     @Column(length = 1000)
     private String description;
 
-    private boolean isTemplate;     // true → system template
-    private boolean isPublic;       // true → visible to all users
+    private Boolean isTemplate = false;     // true → system template
+    private Boolean isPublic = false;       // true → visible to all users
 
     private int durationDays;
 
@@ -92,19 +92,19 @@ public class Habit {
         this.description = description;
     }
 
-    public boolean isTemplate() {
+    public Boolean getIsTemplate() {
         return isTemplate;
     }
 
-    public void setTemplate(boolean template) {
+    public void setIsTemplate(Boolean template) {
         isTemplate = template;
     }
 
-    public boolean isPublic() {
+    public Boolean getIsPublic() {
         return isPublic;
     }
 
-    public void setPublic(boolean aPublic) {
+    public void setIsPublic(Boolean aPublic) {
         isPublic = aPublic;
     }
 
