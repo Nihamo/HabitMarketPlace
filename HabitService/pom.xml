@@ -73,6 +73,12 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Support for LocalDate, LocalDateTime, etc. -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+
     </dependencies>
 
     <dependencyManagement>

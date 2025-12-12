@@ -2,6 +2,7 @@ package com.example.HabitService.Model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 public class Habit {
@@ -10,33 +11,69 @@ public class Habit {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Long userId;            // null → template habit
+    private Long templateSourceId;  // original habit ID for adopted habits
+
     private String title;
 
     @Column(length = 1000)
     private String description;
 
-    private int durationDays;      // how long the habit challenge lasts
-    private Long createdByUserId;  // reference to user service
-    private LocalDate startDate;   // when the habit starts
+    private boolean isTemplate;     // true → system template
+    private boolean isPublic;       // true → visible to all users
 
+    private int durationDays;
+
+    private LocalDate startDate;    // only for user-owned habits
+    private LocalDate endDate;      // auto-calculated
+
+    private String status;          // UPCOMING, ACTIVE, COMPLETED
+
+    private LocalDateTime createdAt;
+    private LocalDateTime lastUpdated;
+
+    // -------------------------
     // Constructors
+    // -------------------------
     public Habit() {}
 
-    public Habit(String title, String description, int durationDays, Long createdByUserId, LocalDate startDate) {
-        this.title = title;
-        this.description = description;
-        this.durationDays = durationDays;
-        this.createdByUserId = createdByUserId;
-        this.startDate = startDate;
+    @PrePersist
+    public void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.lastUpdated = LocalDateTime.now();
     }
 
-    // Getters and Setters
+    @PreUpdate
+    public void onUpdate() {
+        this.lastUpdated = LocalDateTime.now();
+    }
+
+    // -------------------------
+    // Getters & Setters
+    // -------------------------
+
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public Long getTemplateSourceId() {
+        return templateSourceId;
+    }
+
+    public void setTemplateSourceId(Long templateSourceId) {
+        this.templateSourceId = templateSourceId;
     }
 
     public String getTitle() {
@@ -55,6 +92,22 @@ public class Habit {
         this.description = description;
     }
 
+    public boolean isTemplate() {
+        return isTemplate;
+    }
+
+    public void setTemplate(boolean template) {
+        isTemplate = template;
+    }
+
+    public boolean isPublic() {
+        return isPublic;
+    }
+
+    public void setPublic(boolean aPublic) {
+        isPublic = aPublic;
+    }
+
     public int getDurationDays() {
         return durationDays;
     }
@@ -63,19 +116,35 @@ public class Habit {
         this.durationDays = durationDays;
     }
 
-    public Long getCreatedByUserId() {
-        return createdByUserId;
-    }
-
-    public void setCreatedByUserId(Long createdByUserId) {
-        this.createdByUserId = createdByUserId;
-    }
-
     public LocalDate getStartDate() {
         return startDate;
     }
 
     public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getLastUpdated() {
+        return lastUpdated;
     }
 }
