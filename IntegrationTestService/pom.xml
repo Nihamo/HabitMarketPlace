@@ -16,7 +16,7 @@
     <groupId>com.hotel</groupId>
     <artifactId>IntegrationTestService</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>test-service</name>
+    <name>integration-test-service</name>
     <description>Integration Test Service</description>
 
     <properties>
