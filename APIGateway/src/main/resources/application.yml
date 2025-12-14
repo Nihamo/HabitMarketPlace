@@ -7,11 +7,18 @@ spring:
 
   cloud:
     gateway:
+
+      # -----------------------------
+      # Enable Eureka-based routing
+      # -----------------------------
       discovery:
         locator:
           enabled: true
-          lower-case-service-id: true
+          lower-case-service-id: false
 
+      # -----------------------------
+      # Global CORS (important)
+      # -----------------------------
       globalcors:
         corsConfigurations:
           '[/**]':
@@ -19,35 +26,46 @@ spring:
             allowedMethods: "*"
             allowedHeaders: "*"
 
+      # -----------------------------
+      # Explicit Routes
+      # -----------------------------
       routes:
 
         # ============================
-        #   WAREHOUSE SERVICE ROUTE
+        # USER SERVICE
         # ============================
-        - id: warehouse-service
-          uri: lb://WAREHOUSE-SERVICE
+        - id: user-service
+          uri: lb://USER-SERVICE
           predicates:
-            - Path=/warehouse/**
-
+            - Path=/users/**,/auth/**
 
         # ============================
-        #   ORDER SERVICE ROUTE
+        # HABIT SERVICE
         # ============================
-        - id: order-service
-          uri: lb://ORDER-SERVICE
+        - id: habit-service
+          uri: lb://HABIT-SERVICE
           predicates:
-            - Path=/orders/**
-
+            - Path=/habits/**,/progress/**
 
         # ============================
-        #   ORCHESTRATION SERVICE ROUTE
+        # REWARD SERVICE
         # ============================
-        - id: orchestration-service
-          uri: lb://ORCHESTRATION-SERVICE
+        - id: reward-service
+          uri: lb://REWARD-SERVICE
           predicates:
-            - Path=/orchestration/**
+            - Path=/rewards/**
 
+        # ============================
+        # INTEGRATION TEST SERVICE
+        # ============================
+        - id: integration-test-service
+          uri: lb://INTEGRATION-TEST-SERVICE
+          predicates:
+            - Path=/integration-tests/**
 
+# -----------------------------
+# Eureka Configuration
+# -----------------------------
 eureka:
   client:
     service-url:
