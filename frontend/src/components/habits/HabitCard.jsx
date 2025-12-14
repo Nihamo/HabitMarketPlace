@@ -83,7 +83,7 @@ const HabitCard = ({ habit, userId, onCheckIn, onAdopt }) => {
                         completed ? "border-l-green-400 bg-green-500/5" : "border-l-neon-cyan hover:border-l-neon-purple"
                     )} hoverEffect={isActive} style={{ backdropFilter: 'none', WebkitBackdropFilter: 'none' }}>
 
-                        {!isActive && (
+                        {!isActive && isOwner && (
                             <div className="absolute top-2 right-2 text-white/20">
                                 <Lock size={16} />
                             </div>

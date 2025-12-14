@@ -9,50 +9,48 @@ import java.util.List;
 @Repository
 public interface HabitRepository extends JpaRepository<Habit, Long> {
 
-    // -------------------------------------------------------------------
-    // USER-SPECIFIC HABITS
-    // -------------------------------------------------------------------
+        // -------------------------------------------------------------------
+        // USER-SPECIFIC HABITS
+        // -------------------------------------------------------------------
 
-    // Get personal habits (private or public)
-    List<Habit> findByUserId(Long userId);
+        // Get personal habits (private or public)
+        List<Habit> findByUserId(Long userId);
 
-    // Get user's habits filtered by status (ACTIVE, UPCOMING, COMPLETED)
-    List<Habit> findByUserIdAndStatus(Long userId, String status);
+        // Get user's habits filtered by status (ACTIVE, UPCOMING, COMPLETED)
+        List<Habit> findByUserIdAndStatus(Long userId, String status);
 
+        // -------------------------------------------------------------------
+        // TEMPLATE + PUBLIC HABITS (MARKETPLACE)
+        // -------------------------------------------------------------------
 
-    // -------------------------------------------------------------------
-    // TEMPLATE + PUBLIC HABITS (MARKETPLACE)
-    // -------------------------------------------------------------------
+        // System templates
+        List<Habit> findByIsTemplateTrue();
 
-    // System templates
-    List<Habit> findByIsTemplateTrue();
+        // User-created public habits
+        List<Habit> findByIsPublicTrue();
 
-    // User-created public habits
-    List<Habit> findByIsPublicTrue();
+        // Combined marketplace: templates + public user habits
+        List<Habit> findByIsTemplateTrueOrIsPublicTrue();
 
-    // Combined marketplace: templates + public user habits
-    List<Habit> findByIsTemplateTrueOrIsPublicTrue();
+        // -------------------------------------------------------------------
+        // ADOPTION
+        // -------------------------------------------------------------------
 
+        // When user adopts a template/global habit
+        List<Habit> findByTemplateSourceId(Long templateSourceId);
 
-    // -------------------------------------------------------------------
-    // ADOPTION
-    // -------------------------------------------------------------------
+        // Check if user already adopted this template
+        boolean existsByUserIdAndTemplateSourceId(Long userId, Long templateSourceId);
 
-    // When user adopts a template/global habit
-    List<Habit> findByTemplateSourceId(Long templateSourceId);
+        // -------------------------------------------------------------------
+        // SEARCH OPERATIONS (Marketplace Only)
+        // -------------------------------------------------------------------
 
+        // Search templates or public habits by title
+        List<Habit> findByTitleContainingIgnoreCaseAndIsPublicTrueOrTitleContainingIgnoreCaseAndIsTemplateTrue(
+                        String publicTitle, String templateTitle);
 
-    // -------------------------------------------------------------------
-    // SEARCH OPERATIONS (Marketplace Only)
-    // -------------------------------------------------------------------
-
-    // Search templates or public habits by title
-    List<Habit> findByTitleContainingIgnoreCaseAndIsPublicTrueOrTitleContainingIgnoreCaseAndIsTemplateTrue(
-            String publicTitle, String templateTitle
-    );
-
-    // Search templates or public habits by description
-    List<Habit> findByDescriptionContainingIgnoreCaseAndIsPublicTrueOrDescriptionContainingIgnoreCaseAndIsTemplateTrue(
-            String publicDesc, String templateDesc
-    );
+        // Search templates or public habits by description
+        List<Habit> findByDescriptionContainingIgnoreCaseAndIsPublicTrueOrDescriptionContainingIgnoreCaseAndIsTemplateTrue(
+                        String publicDesc, String templateDesc);
 }

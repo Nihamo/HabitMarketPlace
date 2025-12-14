@@ -152,6 +152,11 @@ public class HabitService {
     // -----------------------------------------------------------------------
     public Habit adoptHabit(Long userId, Habit template) {
 
+        // Validating if already adopted
+        if (habitRepo.existsByUserIdAndTemplateSourceId(userId, template.getId())) {
+            throw new RuntimeException("You have already adopted this habit!");
+        }
+
         Habit adopted = new Habit();
 
         adopted.setTitle(template.getTitle());
