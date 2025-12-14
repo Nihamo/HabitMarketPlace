@@ -27,7 +27,10 @@ public class AchievementService {
     public void checkAndAwardAchievements(Long userId) {
 
         // Fetch all habits of the user
-        List<Long> habitIds = habitServiceClient.getHabitsByUser(userId);
+        List<Long> habitIds = habitServiceClient.getHabitsByUser(userId)
+                .stream()
+                .map(habit -> habit.getId())
+                .toList();
 
         // Beginner badge (first habit)
         if (!habitIds.isEmpty()) {
@@ -37,7 +40,7 @@ public class AchievementService {
         int longestStreak = 0;
 
         for (Long habitId : habitIds) {
-            int streak = habitServiceClient.getHabitStreak(habitId);
+            int streak = habitServiceClient.getHabitStreak(habitId, userId);
             longestStreak = Math.max(longestStreak, streak);
         }
 

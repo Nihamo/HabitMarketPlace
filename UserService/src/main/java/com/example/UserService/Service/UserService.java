@@ -55,7 +55,10 @@ public class UserService {
     public UserStatsDTO getUserStatistics(Long userId) {
 
         // Fetch user's habits from HabitService
-        List<Long> habitIds = habitServiceClient.getHabitsByUser(userId);
+        List<Long> habitIds = habitServiceClient.getHabitsByUser(userId)
+                .stream()
+                .map(habit -> habit.getId())
+                .toList();
 
         int totalHabits = habitIds.size();
         int completedHabits = 0;
@@ -65,9 +68,8 @@ public class UserService {
 
         for (Long habitId : habitIds) {
 
-            int streak = habitServiceClient.getHabitStreak(habitId);
-            int completedDays = habitServiceClient.getTotalCompletedDays(habitId);
-
+            int streak = habitServiceClient.getHabitStreak(habitId, userId);
+            long completedDays = habitServiceClient.getTotalCompletedDays(habitId, userId);
             totalCompletedDays += completedDays;
             longestStreak = Math.max(longestStreak, streak);
 

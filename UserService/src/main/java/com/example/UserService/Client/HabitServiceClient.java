@@ -1,55 +1,29 @@
 package com.example.UserService.Client;
 
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
+import com.example.UserService.DTO.HabitDTO;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
-@Component
-public class HabitServiceClient {
+@FeignClient(name = "habit-service", url = "http://localhost:9001")
+public interface HabitServiceClient {
 
-    private final RestTemplate restTemplate;
+    // ---------------- HABITS ----------------
+    @GetMapping("/habits/user/{userId}")
+    List<HabitDTO> getHabitsByUser(@PathVariable Long userId);
 
-    // Base URL of HabitService (adjust port if needed)
-    private static final String HABIT_SERVICE_BASE_URL = "http://localhost:9001";
+    // ---------------- PROGRESS ----------------
+    @GetMapping("/progress/streak/{habitId}/user/{userId}")
+    int getHabitStreak(
+            @PathVariable Long habitId,
+            @PathVariable Long userId
+    );
 
-    public HabitServiceClient() {
-        this.restTemplate = new RestTemplate();
-    }
-
-    // --------------------------------------------------
-    // GET ALL HABITS OF A USER
-    // Calls: GET /habits/user/{userId}
-    // --------------------------------------------------
-    @SuppressWarnings("unchecked")
-    public List<Long> getHabitsByUser(Long userId) {
-
-        String url = HABIT_SERVICE_BASE_URL + "/habits/user/" + userId;
-
-        return restTemplate.getForObject(url, List.class);
-    }
-
-    // --------------------------------------------------
-    // GET STREAK OF A HABIT
-    // Calls: GET /progress/streak/{habitId}
-    // --------------------------------------------------
-    public int getHabitStreak(Long habitId) {
-
-        String url = HABIT_SERVICE_BASE_URL + "/progress/streak/" + habitId;
-
-        Integer streak = restTemplate.getForObject(url, Integer.class);
-        return streak != null ? streak : 0;
-    }
-
-    // --------------------------------------------------
-    // GET TOTAL COMPLETED DAYS OF A HABIT
-    // Calls: GET /progress/total/{habitId}
-    // --------------------------------------------------
-    public int getTotalCompletedDays(Long habitId) {
-
-        String url = HABIT_SERVICE_BASE_URL + "/progress/total/" + habitId;
-
-        Integer completedDays = restTemplate.getForObject(url, Integer.class);
-        return completedDays != null ? completedDays : 0;
-    }
+    @GetMapping("/progress/total/{habitId}/user/{userId}")
+    long getTotalCompletedDays(
+            @PathVariable Long habitId,
+            @PathVariable Long userId
+    );
 }
