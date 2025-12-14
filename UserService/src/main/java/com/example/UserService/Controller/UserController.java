@@ -63,4 +63,14 @@ public class UserController {
                             @RequestParam int coins) {
         return userService.deductCoins(id, coins);
     }
+
+    // --------------------------------------------------
+    // GET USER COINS ONLY
+    // GET /users/{id}/coins
+    // --------------------------------------------------
+    @GetMapping("/{id}/coins")
+    public Integer getUserCoins(@PathVariable Long id) {
+        return userService.getUserById(id).getCoins();
+    }
+
 }
