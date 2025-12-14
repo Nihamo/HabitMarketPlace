@@ -18,7 +18,7 @@ public class UserService {
     private final HabitServiceClient habitServiceClient;
 
     public UserService(UserRepository userRepository,
-                       HabitServiceClient habitServiceClient) {
+            HabitServiceClient habitServiceClient) {
         this.userRepository = userRepository;
         this.habitServiceClient = habitServiceClient;
     }
@@ -28,9 +28,7 @@ public class UserService {
     // ----------------------------------------------------------------
     public User getUserById(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() ->
-                        new UserNotFoundException("User not found with id: " + userId)
-                );
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
     }
 
     // ----------------------------------------------------------------
@@ -39,6 +37,14 @@ public class UserService {
     public User updateProfile(Long userId, UpdateProfileRequest request) {
 
         User user = getUserById(userId);
+
+        // Check for unique username
+        String newUsername = request.getUsername();
+        if (newUsername != null && !newUsername.equals(user.getUsername())) {
+            if (userRepository.findByUsername(newUsername).isPresent()) {
+                throw new RuntimeException("Username already taken");
+            }
+        }
 
         user.setUsername(request.getUsername());
         user.setBio(request.getBio());
@@ -64,14 +70,17 @@ public class UserService {
         int totalHabits = habitIds.size();
         int completedHabits = 0;
         int activeHabits = 0;
-        int totalCompletedDays = 0;
+        int totalCompletedDays = (int) habitServiceClient.getTotalUniqueActiveDays(userId);
         int longestStreak = 0;
 
         for (Long habitId : habitIds) {
 
             int streak = habitServiceClient.getHabitStreak(habitId, userId);
+            // We still need individual completions to check active/completed status
             long completedDays = habitServiceClient.getTotalCompletedDays(habitId, userId);
-            totalCompletedDays += completedDays;
+
+            // REMOVED NAIVE SUM: totalCompletedDays += completedDays;
+
             longestStreak = Math.max(longestStreak, streak);
 
             if (completedDays > 0) {
@@ -91,8 +100,7 @@ public class UserService {
                 completedHabits,
                 longestStreak,
                 totalCompletedDays,
-                completionRate
-        );
+                completionRate);
     }
 
     // ----------------------------------------------------------------
@@ -135,9 +143,7 @@ public class UserService {
                             rank++,
                             user.getId(),
                             user.getUsername(),
-                            user.getCoins()
-                    )
-            );
+                            user.getCoins()));
         }
 
         return leaderboard;

@@ -18,4 +18,7 @@ public interface HabitProgressRepository extends JpaRepository<HabitProgress, Lo
 
     // Get progress sorted (optional for streak calculation)
     List<HabitProgress> findByHabitIdOrderByDateAsc(Long habitId);
+
+    // Get all progress for a list of habits (Efficient bulk fetch)
+    List<HabitProgress> findByHabitIdIn(List<Long> habitIds);
 }

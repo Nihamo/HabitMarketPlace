@@ -10,20 +10,22 @@ import java.util.List;
 @FeignClient(name = "habit-service", url = "http://localhost:9001")
 public interface HabitServiceClient {
 
-    // ---------------- HABITS ----------------
-    @GetMapping("/habits/user/{userId}")
-    List<HabitDTO> getHabitsByUser(@PathVariable Long userId);
+        // ---------------- HABITS ----------------
+        @GetMapping("/habits/user/{userId}")
+        List<HabitDTO> getHabitsByUser(@PathVariable Long userId);
 
-    // ---------------- PROGRESS ----------------
-    @GetMapping("/progress/streak/{habitId}/user/{userId}")
-    int getHabitStreak(
-            @PathVariable Long habitId,
-            @PathVariable Long userId
-    );
+        // ---------------- PROGRESS ----------------
+        @GetMapping("/progress/streak/{habitId}/user/{userId}")
+        int getHabitStreak(
+                        @PathVariable Long habitId,
+                        @PathVariable Long userId);
 
-    @GetMapping("/progress/total/{habitId}/user/{userId}")
-    long getTotalCompletedDays(
-            @PathVariable Long habitId,
-            @PathVariable Long userId
-    );
+        @GetMapping("/progress/total/{habitId}/user/{userId}")
+        long getTotalCompletedDays(
+                        @PathVariable Long habitId,
+                        @PathVariable Long userId);
+
+        @GetMapping("/progress/total/days/user/{userId}")
+        long getTotalUniqueActiveDays(
+                        @PathVariable Long userId);
 }

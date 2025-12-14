@@ -9,15 +9,20 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.example.HabitService.Client.UserServiceClient;
+
 @Service
 public class HabitProgressService {
 
     private final HabitProgressRepository progressRepo;
     private final HabitRepository habitRepo;
+    private final UserServiceClient userServiceClient;
 
-    public HabitProgressService(HabitProgressRepository progressRepo, HabitRepository habitRepo) {
+    public HabitProgressService(HabitProgressRepository progressRepo, HabitRepository habitRepo,
+            UserServiceClient userServiceClient) {
         this.progressRepo = progressRepo;
         this.habitRepo = habitRepo;
+        this.userServiceClient = userServiceClient;
     }
 
     // -------------------------------------------------------------------
@@ -37,7 +42,19 @@ public class HabitProgressService {
     // -------------------------------------------------------------------
     public HabitProgress addProgress(Long habitId, Long userId) {
 
-        validateHabitOwnership(habitId, userId);
+        Habit habit = habitRepo.findById(habitId)
+                .orElseThrow(() -> new RuntimeException("Habit not found: " + habitId));
+
+        if (!habit.getUserId().equals(userId)) {
+            throw new RuntimeException("This habit does not belong to user: " + userId);
+        }
+
+        // -------------------------------------------------------------------
+        // NEW RULE: Can only check in if status is ACTIVE
+        // -------------------------------------------------------------------
+        if (!"ACTIVE".equalsIgnoreCase(habit.getStatus())) {
+            throw new RuntimeException("Cannot add progress to a habit that is " + habit.getStatus());
+        }
 
         LocalDate today = LocalDate.now();
 
@@ -52,7 +69,20 @@ public class HabitProgressService {
         progress.setDate(today);
         progress.setCompleted(true); // marking completed for today
 
-        return progressRepo.save(progress);
+        HabitProgress saved = progressRepo.save(progress);
+
+        // Award 10 Coins
+        try {
+            userServiceClient.addCoins(userId, 10);
+        } catch (Exception e) {
+            System.err.println("Failed to award coins: " + e.getMessage());
+            // Fail silently so progress is still saved? Or rollback?
+            // Usually gamification failure shouldn't block core logic, but user requested
+            // it.
+            // I'll keep it simple: log and continue.
+        }
+
+        return saved;
     }
 
     // -------------------------------------------------------------------
@@ -72,10 +102,10 @@ public class HabitProgressService {
 
         validateHabitOwnership(habitId, userId);
 
-        List<HabitProgress> progressList =
-                progressRepo.findByHabitIdOrderByDateAsc(habitId);
+        List<HabitProgress> progressList = progressRepo.findByHabitIdOrderByDateAsc(habitId);
 
-        if (progressList.isEmpty()) return 0;
+        if (progressList.isEmpty())
+            return 0;
 
         int streak = 0;
         LocalDate today = LocalDate.now();
@@ -123,5 +153,27 @@ public class HabitProgressService {
         progressRepo.deleteById(progressId);
 
         return "Progress entry deleted.";
+    }
+
+    // -------------------------------------------------------------------
+    // GET TOTAL UNIQUE ACTIVE DAYS FOR USER (Across all habits)
+    // -------------------------------------------------------------------
+    public long getTotalUniqueActiveDays(Long userId) {
+        // 1. Get all habit IDs for this user
+        List<Long> habitIds = habitRepo.findByUserId(userId).stream()
+                .map(Habit::getId)
+                .toList();
+
+        if (habitIds.isEmpty())
+            return 0;
+
+        // 2. Get all progress for these habits
+        List<HabitProgress> allProgress = progressRepo.findByHabitIdIn(habitIds);
+
+        // 3. Count unique dates
+        return allProgress.stream()
+                .map(HabitProgress::getDate)
+                .distinct()
+                .count();
     }
 }

@@ -17,13 +17,12 @@ public class HabitProgressController {
     }
 
     // -------------------------------------------------------------------------
-    // ADD DAILY PROGRESS  (User marks today's habit as done)
+    // ADD DAILY PROGRESS (User marks today's habit as done)
     // -------------------------------------------------------------------------
     @PostMapping("/{habitId}/user/{userId}")
     public HabitProgress addProgress(
             @PathVariable Long habitId,
-            @PathVariable Long userId
-    ) {
+            @PathVariable Long userId) {
         return progressService.addProgress(habitId, userId);
     }
 
@@ -33,8 +32,7 @@ public class HabitProgressController {
     @GetMapping("/habit/{habitId}/user/{userId}")
     public List<HabitProgress> getProgressByHabit(
             @PathVariable Long habitId,
-            @PathVariable Long userId
-    ) {
+            @PathVariable Long userId) {
         return progressService.getProgressByHabit(habitId, userId);
     }
 
@@ -44,8 +42,7 @@ public class HabitProgressController {
     @GetMapping("/streak/{habitId}/user/{userId}")
     public int getStreak(
             @PathVariable Long habitId,
-            @PathVariable Long userId
-    ) {
+            @PathVariable Long userId) {
         return progressService.getStreak(habitId, userId);
     }
 
@@ -55,8 +52,7 @@ public class HabitProgressController {
     @GetMapping("/total/{habitId}/user/{userId}")
     public long getTotalCompleted(
             @PathVariable Long habitId,
-            @PathVariable Long userId
-    ) {
+            @PathVariable Long userId) {
         return progressService.getTotalCompletedDays(habitId, userId);
     }
 
@@ -66,8 +62,16 @@ public class HabitProgressController {
     @DeleteMapping("/{progressId}/user/{userId}")
     public String deleteProgress(
             @PathVariable Long progressId,
-            @PathVariable Long userId
-    ) {
+            @PathVariable Long userId) {
         return progressService.deleteProgress(progressId, userId);
+    }
+
+    // -------------------------------------------------------------------------
+    // GET TOTAL UNIQUE ACTIVE DAYS FOR A USER (Across all habits)
+    // -------------------------------------------------------------------------
+    @GetMapping("/total/days/user/{userId}")
+    public long getTotalUniqueDays(
+            @PathVariable Long userId) {
+        return progressService.getTotalUniqueActiveDays(userId);
     }
 }

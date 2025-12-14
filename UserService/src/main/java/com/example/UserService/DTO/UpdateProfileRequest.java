@@ -1,5 +1,6 @@
 package com.example.UserService.DTO;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
 
 public class UpdateProfileRequest {
@@ -7,6 +8,8 @@ public class UpdateProfileRequest {
     private String username;
     private String bio;
     private String profilePictureUrl;
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthdate;
     private String gender;
     private String country;
@@ -17,11 +20,11 @@ public class UpdateProfileRequest {
     }
 
     public UpdateProfileRequest(String username,
-                                String bio,
-                                String profilePictureUrl,
-                                LocalDate birthdate,
-                                String gender,
-                                String country) {
+            String bio,
+            String profilePictureUrl,
+            LocalDate birthdate,
+            String gender,
+            String country) {
         this.username = username;
         this.bio = bio;
         this.profilePictureUrl = profilePictureUrl;
