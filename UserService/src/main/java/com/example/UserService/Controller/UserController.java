@@ -2,9 +2,11 @@ package com.example.UserService.Controller;
 
 import com.example.UserService.DTO.UpdateProfileRequest;
 import com.example.UserService.DTO.UserStatsDTO;
+import com.example.UserService.DTO.LeaderboardResponse;
 import com.example.UserService.Model.User;
 import com.example.UserService.Service.UserService;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -71,6 +73,11 @@ public class UserController {
     @GetMapping("/{id}/coins")
     public Integer getUserCoins(@PathVariable Long id) {
         return userService.getUserById(id).getCoins();
+    }
+
+    @GetMapping("/leaderboard")
+    public List<LeaderboardResponse> getLeaderboard() {
+        return userService.getGlobalLeaderboard();
     }
 
 }

@@ -7,7 +7,8 @@ import com.example.UserService.Exception.UserNotFoundException;
 import com.example.UserService.Model.User;
 import com.example.UserService.Repository.UserRepository;
 import org.springframework.stereotype.Service;
-
+import com.example.UserService.DTO.LeaderboardResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -115,5 +116,30 @@ public class UserService {
 
         user.setCoins(user.getCoins() - coins);
         return userRepository.save(user);
+    }
+
+    // ----------------------------------------------------------------
+    // LEADERBOARD
+    // ----------------------------------------------------------------
+
+    public List<LeaderboardResponse> getGlobalLeaderboard() {
+
+        List<User> users = userRepository.findAllByOrderByCoinsDesc();
+
+        List<LeaderboardResponse> leaderboard = new ArrayList<>();
+        int rank = 1;
+
+        for (User user : users) {
+            leaderboard.add(
+                    new LeaderboardResponse(
+                            rank++,
+                            user.getId(),
+                            user.getUsername(),
+                            user.getCoins()
+                    )
+            );
+        }
+
+        return leaderboard;
     }
 }
