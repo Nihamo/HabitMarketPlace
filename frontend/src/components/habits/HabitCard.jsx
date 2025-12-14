@@ -5,12 +5,15 @@ import { GlassPane } from '../ui/GlassPane';
 import { cn } from '../../lib/utils';
 import { checkInHabit, getHabitStreak } from '../../services/habit.service';
 
-const HabitCard = ({ habit, userId, onCheckIn }) => {
+const HabitCard = ({ habit, userId, onCheckIn, onAdopt }) => {
     const [flipped, setFlipped] = useState(false);
     const [completed, setCompleted] = useState(false);
     const [streak, setStreak] = useState(0);
 
     const isActive = habit.status === 'ACTIVE';
+    // Logic: If I am NOT the owner, I can adopt it.
+    // Ensure both are numbers or strings for comparison
+    const isOwner = userId && habit.userId && (String(userId) === String(habit.userId));
 
     useEffect(() => {
         if (userId && habit.id) {
@@ -24,12 +27,11 @@ const HabitCard = ({ habit, userId, onCheckIn }) => {
     const rotate = useTransform(x, [-100, 100], [-5, 5]);
 
     const handleDragEnd = async (event, info) => {
-        if (!isActive) return;
-
+        // Swipe Right -> Check In (Only if Active and Owned)
         if (info.offset.x > 100) {
-            // Swiped Right -> Check In
+            if (!isActive || !userId) return; // Silent return if not active
             try {
-                if (userId && !completed) {
+                if (!completed) {
                     await checkInHabit(habit.id, userId);
                     setCompleted(true);
                     setStreak(s => s + 1);
@@ -38,8 +40,9 @@ const HabitCard = ({ habit, userId, onCheckIn }) => {
             } catch (err) {
                 console.error("Check-in failed", err);
             }
-        } else if (info.offset.x < -100) {
-            // Swiped Left
+        }
+        // Swipe Left -> Flip (Always allowed to see details/adopt)
+        else if (info.offset.x < -100) {
             setFlipped(!flipped);
         }
     };
@@ -67,12 +70,12 @@ const HabitCard = ({ habit, userId, onCheckIn }) => {
                         opacity: flipped ? 0 : 1,
                         transition: 'opacity 0s 0.35s' // Switch visibility exactly halfway
                     }}
-                    drag={isActive ? "x" : false}
+                    drag="x"
                     dragConstraints={{ left: 0, right: 0 }}
                     onDragEnd={handleDragEnd}
                     className={cn(
                         "rounded-2xl p-0",
-                        isActive ? "cursor-grab active:cursor-grabbing" : "cursor-not-allowed grayscale"
+                        (isActive || !isOwner) ? "cursor-grab active:cursor-grabbing" : "cursor-not-allowed grayscale"
                     )}
                 >
                     <GlassPane className={cn(
@@ -157,12 +160,23 @@ const HabitCard = ({ habit, userId, onCheckIn }) => {
                             </div>
                         </div>
 
-                        <button
-                            onClick={() => setFlipped(false)}
-                            className="text-[10px] text-white/30 hover:text-white flex items-center gap-1 transition-colors pb-1"
-                        >
-                            <RefreshCw size={10} /> Flip Back
-                        </button>
+                        <div className="flex w-full gap-2 px-2 mt-auto">
+                            <button
+                                onClick={() => setFlipped(false)}
+                                className="flex-1 text-[10px] text-white/30 hover:text-white flex items-center justify-center gap-1 transition-colors py-1 rounded bg-white/5 hover:bg-white/10"
+                            >
+                                <RefreshCw size={10} /> Flip Back
+                            </button>
+
+                            {!isOwner && onAdopt && (
+                                <button
+                                    onClick={(e) => { e.stopPropagation(); onAdopt(); }}
+                                    className="flex-1 text-[10px] bg-neon-cyan/20 text-neon-cyan hover:bg-neon-cyan/40 font-bold uppercase tracking-wider py-1 rounded transition-colors"
+                                >
+                                    Adopt
+                                </button>
+                            )}
+                        </div>
                     </GlassPane>
                 </div>
             </motion.div>

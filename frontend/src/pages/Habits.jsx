@@ -6,7 +6,7 @@ import { GlassPane } from '../components/ui/GlassPane';
 import { GlassInput } from '../components/ui/GlassInput';
 import { NeonButton } from '../components/ui/NeonButton';
 import HabitCard from '../components/habits/HabitCard';
-import { createHabit, getMarketplaceHabits, getHabitTemplates, getPublicHabits, searchHabitsByTitle, deleteHabit, updateHabit, getUserHabits } from '../services/habit.service';
+import { createHabit, getMarketplaceHabits, getHabitTemplates, getPublicHabits, searchHabitsByTitle, deleteHabit, updateHabit, getUserHabits, adoptHabit } from '../services/habit.service';
 import { getCurrentUser } from '../services/auth.service';
 
 const Habits = () => {
@@ -91,6 +91,19 @@ const Habits = () => {
         }
     };
 
+    const handleAdopt = async (habit) => {
+        if (window.confirm(`Adopt "${habit.title}" into your routine?`)) {
+            try {
+                await adoptHabit(user.id, habit.id);
+                alert("Protocol Adopted Successfully!");
+                setActiveTab('PERSONAL'); // Switch to personal tab to see it
+            } catch (err) {
+                console.error(err);
+                alert("Adoption Failed.");
+            }
+        }
+    };
+
     return (
         <Layout>
             <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
@@ -130,7 +143,7 @@ const Habits = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {habits.map((habit) => (
                     <div key={habit.id} className="relative group">
-                        <HabitCard habit={habit} userId={user?.id} />
+                        <HabitCard habit={habit} userId={user?.id} onCheckIn={(id) => console.log("Checked in", id)} onAdopt={() => handleAdopt(habit)} />
                         {/* Admin Actions for Owner */}
                         {user && habit.userId === parseInt(user.id) && (
                             <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">

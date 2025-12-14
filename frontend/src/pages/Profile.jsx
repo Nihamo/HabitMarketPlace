@@ -155,7 +155,7 @@ const Profile = () => {
                     <div className="absolute top-0 right-0 p-4 z-20">
                         {isOwner ? (
                             <NeonButton variant="outline" size="sm" onClick={() => setIsEditing(!isEditing)}>
-                                <Settings size={18} /> {isEditing ? 'Cancel' : 'Edit Neural Profile'}
+                                <Settings size={18} /> {isEditing ? 'Cancel' : 'Edit Profile'}
                             </NeonButton>
                         ) : (
                             <NeonButton
@@ -228,7 +228,7 @@ const Profile = () => {
                     {isEditing && isOwner && (
                         <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}>
                             <GlassPane className="border-neon-gold/30">
-                                <h3 className="text-lg font-bold text-neon-gold mb-6">Update Protocol Parameters</h3>
+                                <h3 className="text-lg font-bold text-neon-gold mb-6">Update Details</h3>
                                 <form onSubmit={handleUpdate} className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-4">
                                         <div>
@@ -256,11 +256,10 @@ const Profile = () => {
                                                 value={editForm.gender}
                                                 onChange={e => setEditForm({ ...editForm, gender: e.target.value })}
                                             >
-                                                <option value="">Select Identity</option>
+                                                <option value="">Choose Gender</option>
                                                 <option value="Male">Male</option>
                                                 <option value="Female">Female</option>
-                                                <option value="Non-binary">Non-binary</option>
-                                                <option value="Cybernetic">Cybernetic</option>
+                                                <option value="Others">Others</option>
                                             </select>
                                         </div>
                                         <div>
@@ -269,7 +268,7 @@ const Profile = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-full">
-                                        <NeonButton className="w-full justify-center">Save Parameters</NeonButton>
+                                        <NeonButton className="w-full justify-center">Save</NeonButton>
                                     </div>
                                 </form>
                             </GlassPane>
@@ -285,7 +284,7 @@ const Profile = () => {
 
                         <GlassPane className="max-h-60 overflow-y-auto custom-scrollbar">
                             <div className="text-xs text-neon-cyan uppercase tracking-widest mb-3 sticky top-0 bg-black/50 backdrop-blur p-2">Followers</div>
-                            {followers.length === 0 ? <p className="text-white/30 text-sm p-2">No signals detected.</p> : (
+                            {followers.length === 0 ? <p className="text-white/30 text-sm p-2">0 Followers</p> : (
                                 <div className="space-y-2">
                                     {followers.map((f, i) => (
                                         <Link to={`/profile/${f.followerId}`} key={i} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 transition-colors group">
@@ -304,7 +303,7 @@ const Profile = () => {
 
                         <GlassPane className="max-h-60 overflow-y-auto custom-scrollbar">
                             <div className="text-xs text-neon-purple uppercase tracking-widest mb-3 sticky top-0 bg-black/50 backdrop-blur p-2">Following</div>
-                            {following.length === 0 ? <p className="text-white/30 text-sm p-2">No outgoing links.</p> : (
+                            {following.length === 0 ? <p className="text-white/30 text-sm p-2">0 Following</p> : (
                                 <div className="space-y-2">
                                     {following.map((f, i) => (
                                         <Link to={`/profile/${f.followedId}`} key={i} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 transition-colors group">

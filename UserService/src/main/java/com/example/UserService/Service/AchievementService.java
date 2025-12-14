@@ -16,7 +16,7 @@ public class AchievementService {
     private final HabitServiceClient habitServiceClient;
 
     public AchievementService(AchievementRepository achievementRepository,
-                              HabitServiceClient habitServiceClient) {
+            HabitServiceClient habitServiceClient) {
         this.achievementRepository = achievementRepository;
         this.habitServiceClient = habitServiceClient;
     }
@@ -67,8 +67,7 @@ public class AchievementService {
     // --------------------------------------------------
     public List<AchievementDTO> getUserAchievements(Long userId) {
 
-        List<UserAchievement> achievements =
-                achievementRepository.findByUserId(userId);
+        List<UserAchievement> achievements = achievementRepository.findByUserId(userId);
 
         List<AchievementDTO> result = new ArrayList<>();
 
@@ -76,9 +75,7 @@ public class AchievementService {
             result.add(
                     new AchievementDTO(
                             achievement.getBadgeName(),
-                            achievement.getEarnedAt()
-                    )
-            );
+                            achievement.getEarnedAt()));
         }
 
         return result;
@@ -89,15 +86,18 @@ public class AchievementService {
     // --------------------------------------------------
     private void awardBadgeIfNotExists(Long userId, String badgeName) {
 
-        boolean alreadyEarned =
-                achievementRepository.existsByUserIdAndBadgeName(userId, badgeName);
+        boolean alreadyEarned = achievementRepository.existsByUserIdAndBadgeName(userId, badgeName);
 
         if (!alreadyEarned) {
             UserAchievement achievement = new UserAchievement();
             achievement.setUserId(userId);
             achievement.setBadgeName(badgeName);
 
-            achievementRepository.save(achievement);
+            try {
+                achievementRepository.save(achievement);
+            } catch (Exception e) {
+                // Ignore duplicate entry if race condition occurs
+            }
         }
     }
 }

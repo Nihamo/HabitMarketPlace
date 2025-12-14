@@ -17,7 +17,7 @@ public class HabitService {
     }
 
     // -----------------------------------------------------------------------
-    // CREATE A NEW HABIT  (user created OR adopt)
+    // CREATE A NEW HABIT (user created OR adopt)
     // -----------------------------------------------------------------------
     public Habit createHabit(Habit habit) {
 
@@ -103,8 +103,7 @@ public class HabitService {
         if (existing.getStartDate() != null && existing.getEndDate() != null) {
             int days = existing.getStartDate().until(existing.getEndDate()).getDays() + 1;
             existing.setDurationDays(days);
-        }
-        else if (existing.getStartDate() != null && existing.getDurationDays() > 0) {
+        } else if (existing.getStartDate() != null && existing.getDurationDays() > 0) {
             existing.setEndDate(existing.getStartDate().plusDays(existing.getDurationDays() - 1));
         }
 
@@ -139,14 +138,13 @@ public class HabitService {
 
     public List<Habit> searchMarketplaceByTitle(String keyword) {
         return habitRepo.findByTitleContainingIgnoreCaseAndIsPublicTrueOrTitleContainingIgnoreCaseAndIsTemplateTrue(
-                keyword, keyword
-        );
+                keyword, keyword);
     }
 
     public List<Habit> searchMarketplaceByDescription(String keyword) {
-        return habitRepo.findByDescriptionContainingIgnoreCaseAndIsPublicTrueOrDescriptionContainingIgnoreCaseAndIsTemplateTrue(
-                keyword, keyword
-        );
+        return habitRepo
+                .findByDescriptionContainingIgnoreCaseAndIsPublicTrueOrDescriptionContainingIgnoreCaseAndIsTemplateTrue(
+                        keyword, keyword);
     }
 
     // -----------------------------------------------------------------------
@@ -161,12 +159,19 @@ public class HabitService {
         adopted.setDurationDays(template.getDurationDays());
         adopted.setUserId(userId);
 
-        adopted.setStartDate(template.getStartDate());
-        adopted.setEndDate(template.getEndDate());
+        // Reset dates for the adopter so they start TODAY
+        adopted.setStartDate(LocalDate.now());
+        if (template.getDurationDays() > 0) {
+            adopted.setEndDate(LocalDate.now().plusDays(template.getDurationDays() - 1));
+        } else {
+            // Fallback if template has no duration (unlikely but safe)
+            adopted.setEndDate(LocalDate.now().plusDays(20));
+            adopted.setDurationDays(21);
+        }
 
-        adopted.setIsTemplate(false);           // adopted ones are not templates
-        adopted.setIsPublic(false);             // user may choose to make it public
-        adopted.setTemplateSourceId(template.getId());  // reference to original
+        adopted.setIsTemplate(false); // adopted ones are not templates
+        adopted.setIsPublic(false); // user may choose to make it public
+        adopted.setTemplateSourceId(template.getId()); // reference to original
 
         updateHabitStatus(adopted);
 
@@ -174,7 +179,7 @@ public class HabitService {
     }
 
     // -----------------------------------------------------------------------
-    // HABIT STATUS LOGIC  (UPCOMING / ACTIVE / COMPLETED)
+    // HABIT STATUS LOGIC (UPCOMING / ACTIVE / COMPLETED)
     // -----------------------------------------------------------------------
     public void updateHabitStatus(Habit habit) {
 
@@ -187,11 +192,9 @@ public class HabitService {
 
         if (today.isBefore(habit.getStartDate())) {
             habit.setStatus("UPCOMING");
-        }
-        else if (today.isAfter(habit.getEndDate())) {
+        } else if (today.isAfter(habit.getEndDate())) {
             habit.setStatus("COMPLETED");
-        }
-        else {
+        } else {
             habit.setStatus("ACTIVE");
         }
     }

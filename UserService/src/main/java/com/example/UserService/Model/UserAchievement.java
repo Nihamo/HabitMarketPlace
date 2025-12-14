@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "user_achievements")
+@Table(name = "user_achievements", uniqueConstraints = {
+        @UniqueConstraint(columnNames = { "userId", "badgeName" })
+})
 public class UserAchievement {
 
     @Id
@@ -22,7 +24,8 @@ public class UserAchievement {
 
     // ----------- Constructors -----------
 
-    public UserAchievement() {}
+    public UserAchievement() {
+    }
 
     public UserAchievement(Long id, Long userId, String badgeName, LocalDateTime earnedAt) {
         this.id = id;
@@ -33,17 +36,37 @@ public class UserAchievement {
 
     // ----------- Getters & Setters -----------
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public Long getUserId() { return userId; }
-    public void setUserId(Long userId) { this.userId = userId; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getBadgeName() { return badgeName; }
-    public void setBadgeName(String badgeName) { this.badgeName = badgeName; }
+    public Long getUserId() {
+        return userId;
+    }
 
-    public LocalDateTime getEarnedAt() { return earnedAt; }
-    public void setEarnedAt(LocalDateTime earnedAt) { this.earnedAt = earnedAt; }
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public String getBadgeName() {
+        return badgeName;
+    }
+
+    public void setBadgeName(String badgeName) {
+        this.badgeName = badgeName;
+    }
+
+    public LocalDateTime getEarnedAt() {
+        return earnedAt;
+    }
+
+    public void setEarnedAt(LocalDateTime earnedAt) {
+        this.earnedAt = earnedAt;
+    }
 
     @PrePersist
     protected void onCreate() {
