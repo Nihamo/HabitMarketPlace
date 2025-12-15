@@ -10,7 +10,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.0.0</version>
+        <version>3.2.5</version>
         <relativePath/>
     </parent>
 
@@ -24,16 +24,16 @@
     <!-- ================= PROPERTIES ================= -->
     <properties>
         <java.version>21</java.version>
-        <spring-cloud.version>2025.1.0</spring-cloud.version>
+        <spring-cloud.version>2023.0.4</spring-cloud.version>
     </properties>
 
     <!-- ================= DEPENDENCIES ================= -->
     <dependencies>
 
-        <!-- 🔹 Spring Web -->
+        <!-- 🔹 Spring Web (MVC – REQUIRED for MockMvc) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webmvc</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
         <!-- 🔹 Spring Data JPA -->
@@ -94,7 +94,7 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- 🔹 TESTING -->
+        <!-- 🔹 Testing (includes MockMvc) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
