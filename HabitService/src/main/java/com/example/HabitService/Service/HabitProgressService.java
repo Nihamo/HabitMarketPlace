@@ -50,7 +50,7 @@ public class HabitProgressService {
         }
 
         // -------------------------------------------------------------------
-        // NEW RULE: Can only check in if status is ACTIVE
+        // RULE: Can only check in if status is ACTIVE
         // -------------------------------------------------------------------
         if (!"ACTIVE".equalsIgnoreCase(habit.getStatus())) {
             throw new RuntimeException("Cannot add progress to a habit that is " + habit.getStatus());

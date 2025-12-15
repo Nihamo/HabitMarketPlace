@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
-@FeignClient(name = "habit-service", url = "http://localhost:9001")
+@FeignClient(name = "HABIT-SERVICE")
 public interface HabitServiceClient {
 
         // ---------------- HABITS ----------------

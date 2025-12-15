@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "User-Service", url = "http://localhost:9002")
+@FeignClient(name = "USER-SERVICE")
 public interface UserServiceClient {
 
     @PutMapping("/users/{id}/coins/add")
