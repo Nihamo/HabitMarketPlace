@@ -40,7 +40,7 @@ const Leaderboard = () => {
     return (
         <Layout>
             <div className="text-center mb-12">
-                <h1 className="text-4xl font-display font-bold text-white mb-2">NEURAL RANKINGS</h1>
+                <h1 className="text-4xl font-display font-bold text-white mb-2">HABIT RANKINGS</h1>
                 <p className="text-white/50">Top high-performance agents.</p>
             </div>
 

@@ -51,7 +51,7 @@ const Habits = () => {
     };
 
     const handleDelete = async (id) => {
-        if (window.confirm("Terminate Protocol?")) {
+        if (window.confirm("Terminate Habit?")) {
             try {
                 await deleteHabit(id);
                 setHabits(habits.filter(h => h.id !== id));
@@ -95,7 +95,7 @@ const Habits = () => {
         if (window.confirm(`Adopt "${habit.title}" into your routine?`)) {
             try {
                 await adoptHabit(user.id, habit.id);
-                alert("Protocol Adopted Successfully!");
+                alert("Habit Adopted Successfully!");
                 setActiveTab('PERSONAL'); // Switch to personal tab to see it
             } catch (err) {
                 console.error(err);
@@ -109,7 +109,7 @@ const Habits = () => {
             <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
                 <div>
                     <h1 className="text-3xl font-bold font-display text-white">Habit Marketplace</h1>
-                    <p className="text-white/50">Discover and adopt new protocols.</p>
+                    <p className="text-white/50">Discover and adopt new habits.</p>
                 </div>
                 <NeonButton onClick={() => setIsCreateModalOpen(true)}>
                     <Plus size={20} /> Create Custom
@@ -119,7 +119,7 @@ const Habits = () => {
             <form onSubmit={handleSearch} className="mb-6 flex gap-2">
                 <GlassInput
                     icon={Search}
-                    placeholder="Search protocols..."
+                    placeholder="Search habits..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="flex-1"
@@ -173,7 +173,7 @@ const Habits = () => {
                         <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="relative w-full max-w-lg">
                             <GlassPane>
                                 <button onClick={() => setIsCreateModalOpen(false)} className="absolute top-4 right-4 text-white/50 hover:text-white"><X size={24} /></button>
-                                <h2 className="text-2xl font-bold text-white mb-6">New Protocol</h2>
+                                <h2 className="text-2xl font-bold text-white mb-6">New Habit</h2>
                                 <form onSubmit={handleCreate} className="space-y-4">
                                     <div>
                                         <label className="text-xs text-neon-cyan uppercase tracking-wider mb-2 block">Habit Title</label>
@@ -187,7 +187,7 @@ const Habits = () => {
                                         <label className="text-xs text-neon-cyan uppercase tracking-wider mb-2 block">Duration</label>
                                         <GlassInput type="number" value={newHabit.durationDays} onChange={(e) => setNewHabit({ ...newHabit, durationDays: e.target.value })} placeholder="21" />
                                     </div>
-                                    <NeonButton className="w-full mt-4">Initialize Protocol</NeonButton>
+                                    <NeonButton className="w-full mt-4">Create Habit</NeonButton>
                                 </form>
                             </GlassPane>
                         </motion.div>
@@ -203,7 +203,7 @@ const Habits = () => {
                         <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="relative w-full max-w-lg">
                             <GlassPane>
                                 <button onClick={() => setIsEditModalOpen(false)} className="absolute top-4 right-4 text-white/50 hover:text-white"><X size={24} /></button>
-                                <h2 className="text-2xl font-bold text-white mb-6">Edit Protocol</h2>
+                                <h2 className="text-2xl font-bold text-white mb-6">Edit Habit</h2>
                                 <form onSubmit={handleUpdate} className="space-y-4">
                                     <div>
                                         <label className="text-xs text-neon-blue uppercase tracking-wider mb-2 block">Habit Title</label>
@@ -251,7 +251,7 @@ const Habits = () => {
                                         </label>
                                     </div>
 
-                                    <NeonButton className="w-full mt-4" variant="primary">Update Protocol</NeonButton>
+                                    <NeonButton className="w-full mt-4" variant="primary">Update Habit</NeonButton>
                                 </form>
                             </GlassPane>
                         </motion.div>

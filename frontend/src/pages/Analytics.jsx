@@ -111,7 +111,7 @@ const Analytics = () => {
     return (
         <Layout>
             <div className="mb-8">
-                <h1 className="text-3xl font-bold font-display text-white">Neural Analytics</h1>
+                <h1 className="text-3xl font-bold font-display text-white">Habit Analytics</h1>
                 <p className="text-white/50">Performance metrics and growth tracking.</p>
             </div>
 

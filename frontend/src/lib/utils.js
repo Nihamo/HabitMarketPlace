@@ -4,7 +4,7 @@ import { Gift, Coffee, Tv, Music, CreditCard, Palette, Zap, Crown, Utensils, Sma
 
 export const BADGE_DEFINITIONS = [
     { name: "Beginner", description: "Complete your day 1", icon: Sprout, color: "text-green-400", from: "from-green-400", to: "to-emerald-600" },
-    { name: "7-Day Streak", description: "Maintain consistency for 7 days on any protocol.", icon: Flame, color: "text-orange-400", from: "from-orange-400", to: "to-red-600" },
+    { name: "7-Day Streak", description: "Maintain consistency for 7 days on any habit.", icon: Flame, color: "text-orange-400", from: "from-orange-400", to: "to-red-600" },
     { name: "30-Day Streak", description: "Achieve 30 days of unbroken discipline.", icon: Zap, color: "text-blue-400", from: "from-blue-400", to: "to-purple-600" },
     { name: "Habit Master", description: "Maintaining 5 active habits", icon: Crown, color: "text-yellow-400", from: "from-yellow-400", to: "to-amber-600" }
 ];

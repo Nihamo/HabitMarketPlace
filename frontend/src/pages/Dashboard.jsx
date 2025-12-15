@@ -95,7 +95,7 @@ const Dashboard = () => {
                     </div>
 
                     {loading ? (
-                        <div className="text-white/30 text-center py-10">Syncing neural link...</div>
+                        <div className="text-white/30 text-center py-10">Syncing habits...</div>
                     ) : habits.length === 0 ? (
                         <div className="text-center py-10 bg-white/5 rounded-2xl border border-dashed border-white/10">
                             <p className="text-white/50 mb-4">No active habits found.</p>
