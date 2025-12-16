@@ -13,23 +13,30 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class UserServiceApplicationTests {
 
-	@Autowired
-	private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
-	@Test
-	void contextLoads() {
-		// checks if Spring context loads
-	}
+    @Test
+    void contextLoads() {
+        // checks if Spring context loads
+    }
 
-	@Test
-	void getUserProfile_shouldReturnOk() throws Exception {
-		mockMvc.perform(get("/users/1"))
-				.andExpect(status().isOk());
-	}
+    @Test
+    void getUserProfile_shouldReturnOk() throws Exception {
+        mockMvc.perform(get("/users/1"))
+                .andExpect(status().isOk());
+    }
 
-	@Test
-	void getLeaderboard_shouldReturnOk() throws Exception {
-		mockMvc.perform(get("/users/leaderboard"))
-				.andExpect(status().isOk());
-	}
+    @Test
+    void getLeaderboard_shouldReturnOk() throws Exception {
+        mockMvc.perform(get("/users/leaderboard"))
+                .andExpect(status().isOk());
+    }
+
+    // FAILING TEST
+    @Test
+    void getNonExistingUser_shouldFail() throws Exception {
+        mockMvc.perform(get("/users/1"))
+                .andExpect(status().isOk()); // wrong expectation on purpose
+    }
 }
